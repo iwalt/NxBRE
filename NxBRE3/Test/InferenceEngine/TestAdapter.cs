@@ -53,10 +53,12 @@ namespace NxBRE.Test.InferenceEngine {
 			if (fi.Exists) fi.Delete();
 		}
 	
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void RuleMLImplicationLabelTagParserMissingLabel() {
-			new RuleML086NafDatalogAdapter.ImplicationProperties("priority:25");
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                new RuleML086NafDatalogAdapter.ImplicationProperties("priority:25");
+                Assert.Fail("Should never reach me!");
+            });
 		}
 	
 		[Test]
@@ -148,12 +150,14 @@ namespace NxBRE.Test.InferenceEngine {
 
 			Assert.IsTrue(AreSameXml(inFile, outFile), "Same XML: " + inFile + " and " + outFile);
 		}
-		
-		[Test][ExpectedException(typeof(BREException))]
-		public void RuleML086LoadFactsWithNoRuleBase() {
-			IInferenceEngine ie = new IEImpl();
-			ie.LoadFacts(new RuleML086DatalogAdapter(ruleFilesFolder + "facts.ruleml", FileAccess.Read));
-			Assert.Fail("Should never reach me!");
+
+        [Test]
+        public void RuleML086LoadFactsWithNoRuleBase() {
+            Assert.Throws<BREException>(() => {
+                IInferenceEngine ie = new IEImpl();
+                ie.LoadFacts(new RuleML086DatalogAdapter(ruleFilesFolder + "facts.ruleml", FileAccess.Read));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 	
 		[Test]
@@ -171,12 +175,15 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.AreEqual(10, ie.FactsCount, "Subsequent process");
 		}
 	
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void RuleML086SaveFactsWithNoRuleBase() {
-			IInferenceEngine ie = new IEImpl();
-			ie.SaveFacts(new RuleML086DatalogAdapter(Parameter.GetString("unittest.outputfolder") + "/_outfacts.ruleml",
-			                                         FileAccess.Write));
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                IInferenceEngine ie = new IEImpl();
+                ie.SaveFacts(
+                    new RuleML086DatalogAdapter(Parameter.GetString("unittest.outputfolder") + "/_outfacts.ruleml",
+                                                FileAccess.Write));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]
@@ -280,12 +287,12 @@ namespace NxBRE.Test.InferenceEngine {
 						Assert.IsTrue(i.Deduction.HasFormula, "imp1: HasFormula");
 						Atom atom = (Atom)i.AtomGroup.Members[0];
 						Assert.IsTrue(atom.HasSlot, "Has Slot");
-						Assert.IsInstanceOfType(typeof(byte[]), atom.GetPredicateValue(1), "Typed predicate support");
+						Assert.IsInstanceOf(typeof(byte[]), atom.GetPredicateValue(1), "Typed predicate support");
 						
-						Assert.IsInstanceOfType(typeof(Function), atom.Members[2], "Basic slot type predicate support");
+						Assert.IsInstanceOf(typeof(Function), atom.Members[2], "Basic slot type predicate support");
 						Assert.AreEqual("Size", atom.SlotNames[2], "Basic slot name predicate support");
 						
-						Assert.IsInstanceOfType(typeof(int), atom.GetPredicateValue(3), "Typed slot type predicate support");
+						Assert.IsInstanceOf(typeof(int), atom.GetPredicateValue(3), "Typed slot type predicate support");
 						Assert.AreEqual("Year", atom.SlotNames[3], "Typed slot name predicate support");
 						Assert.AreEqual(2006, atom.GetPredicate("Year").Value, "Typed slot value support");
 						break;
@@ -383,10 +390,11 @@ namespace NxBRE.Test.InferenceEngine {
 		}
 		
 		[Test]
-		[ExpectedException(typeof(InvalidDataException))]
 		public void HRFWithSyntaxError() {
 			// regression test for bug 1850255
-			new HRF086Adapter(new MemoryStream(Encoding.ASCII.GetBytes("#DIRECTION_FORWARD\n\rfoo(bar);")), FileAccess.Read);
+            Assert.Throws<InvalidDataException>(() =>
+			    new HRF086Adapter(
+                    new MemoryStream(Encoding.ASCII.GetBytes("#DIRECTION_FORWARD\n\rfoo(bar);")), FileAccess.Read));
 		}
 		
 	}

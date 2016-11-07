@@ -71,11 +71,14 @@ namespace NxBRE.Test.InferenceEngine {
 			ruleFilesFolder = Parameter.GetString("unittest.ruleml.inputfolder") + "/";
 		}
 
-		[Test][ExpectedException(typeof(BREException))]
-		public void ErrorProcessBO() {
-			IInferenceEngine ie = new IEImpl();
-			ie.LoadRuleBase(new RuleML09NafDatalogAdapter(ruleFilesFolder + "test-0_9.ruleml", FileAccess.Read));
-			ie.Process(new Hashtable());
+        [Test]
+        public void ErrorProcessBO() {
+            Assert.Throws<BREException>(() => {
+                IInferenceEngine ie = new IEImpl();
+                ie.LoadRuleBase(
+                    new RuleML09NafDatalogAdapter(ruleFilesFolder + "test-0_9.ruleml", FileAccess.Read));
+                ie.Process(new Hashtable());
+            });
 		}
 		
 		/// <summary>

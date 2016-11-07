@@ -21,7 +21,7 @@ namespace NxBRE.Test
 		
 		private const double DELTA = .000001;
 		
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void InitTest()
 		{
 			testFile = Parameter.GetString("unittest.inputfile");

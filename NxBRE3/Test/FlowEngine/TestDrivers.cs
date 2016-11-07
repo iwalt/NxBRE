@@ -24,7 +24,7 @@ namespace NxBRE.Test.FlowEngine
 		
 		private IFlowEngine breTest;
 		
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void InitTest()
 		{
 			testFile = Parameter.GetString("unittest.inputfile");

@@ -25,7 +25,7 @@ namespace NxBRE.Test.InferenceEngine {
 		private	Atom atom3;
 		private Atom atomF;
 	
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Init() {
 			atom2_2 = new Atom("luxury", new Variable("product"));
 			atom3 = new Atom("spending", new Variable("customer"), new Individual("min(5000,EUR)"), new Individual("previous year"));
@@ -83,9 +83,10 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.AreEqual(typeof(Variable), clone.GetPredicate("client").GetType(), "Slot predicate after cloning");
 		}
 		
-		[Test][ExpectedException(typeof(ArgumentException))]
+		[Test]
 		public void SlotInSlot() {
-			new Slot("error", new Slot("test", new Individual("44")));
+            Assert.Throws<ArgumentException>(() =>
+			    new Slot("error", new Slot("test", new Individual("44"))));
 		}
 
 		
@@ -152,39 +153,49 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.IsTrue(imp2.IsIntersecting(imp2bis), "Non-similar (2 vars, 1 ind)");
 			Assert.IsFalse(impX.IsIntersecting(imp2), "Non-similar bis (2 vars, 1 ind)");
 		}
-		
-		[Test][ExpectedException(typeof(ArgumentOutOfRangeException))]
-		public void WrongImplicationLowPriority() {
-			new Implication(null, -1, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			Assert.Fail("Should never reach me!");
+
+        [Test]
+        public void WrongImplicationLowPriority() {
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                new Implication(null, -1, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
-		[Test][ExpectedException(typeof(ArgumentOutOfRangeException))]
+		[Test]
 		public void WrongImplicationHiPriority() {
-			new Implication(null, 101, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                new Implication(null, 101, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                Assert.Fail("Should never reach me!");
+            });
+		}
+
+        [Test]
+        public void WrongImplicationLowSalience() {
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                Implication i = new Implication(null, ImplicationPriority.Medium, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                i.Salience = -1;
+                Assert.Fail("Should never reach me!");
+            });
+		}
+
+        [Test]
+        public void WrongImplicationHiSalience() {
+            Assert.Throws<ArgumentOutOfRangeException>(() => {
+                Implication i = new Implication(null, ImplicationPriority.Medium, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                i.Salience = 100;
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
-		[Test][ExpectedException(typeof(ArgumentOutOfRangeException))]
-		public void WrongImplicationLowSalience() {
-			Implication i = new Implication(null, ImplicationPriority.Medium, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			i.Salience = -1;
-			Assert.Fail("Should never reach me!");
-		}
-		
-		[Test][ExpectedException(typeof(ArgumentOutOfRangeException))]
-		public void WrongImplicationHiSalience() {
-			Implication i = new Implication(null, ImplicationPriority.Medium, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			i.Salience = 100;
-			Assert.Fail("Should never reach me!");
-		}
-		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void ImplicationBaseDuplicatedLabel() {
-			ImplicationBase ib = new ImplicationBase();
-			ib.Add(new Implication("impMedLow", 25, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
-			ib.Add(new Implication("impMedLow", 75, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                ImplicationBase ib = new ImplicationBase();
+                ib.Add(new Implication("impMedLow", 25, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
+                ib.Add(new Implication("impMedLow", 75, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]
@@ -197,24 +208,28 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.IsNull(ib.Get("missing bit"), "Failed Get");
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void MutexMissing() {
-			ImplicationBase ib = new ImplicationBase();
-			Implication imp = new Implication("impMedLow", 25, "missing", String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			ib.Add(imp);
-			ib.Add(new Implication("impMedHi", 25, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
-			new MutexManager(ib).AnalyzeImplications();
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                ImplicationBase ib = new ImplicationBase();
+                Implication imp = new Implication("impMedLow", 25, "missing", String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                ib.Add(imp);
+                ib.Add(new Implication("impMedHi", 25, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
+                new MutexManager(ib).AnalyzeImplications();
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void PreconditionMissing() {
-			ImplicationBase ib = new ImplicationBase();
-			Implication impMedLow = new Implication("impMedLow", 25, String.Empty, "missing", imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			ib.Add(impMedLow);
-			ib.Add(new Implication("impMedHi", 25, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
-			new PreconditionManager(ib).AnalyzeImplications();
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                ImplicationBase ib = new ImplicationBase();
+                Implication impMedLow = new Implication("impMedLow", 25, String.Empty, "missing", imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                ib.Add(impMedLow);
+                ib.Add(new Implication("impMedHi", 25, String.Empty, String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3)));
+                new PreconditionManager(ib).AnalyzeImplications();
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]
@@ -231,16 +246,18 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.IsTrue(preconditionChildren.Contains(impMedHi), "preconditionChildren content");
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void PreconditionIsMutex() {
-			ImplicationBase ib = new ImplicationBase();
-			Implication impMedLow = new Implication("impMedLow", 25, "impMedHi", String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			ib.Add(impMedLow);
-			Implication impMedHi = new Implication("impMedHi", 25, String.Empty, "impMedLow", imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
-			ib.Add(impMedHi);
-			new MutexManager(ib).AnalyzeImplications();
-			new PreconditionManager(ib).AnalyzeImplications();
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                ImplicationBase ib = new ImplicationBase();
+                Implication impMedLow = new Implication("impMedLow", 25, "impMedHi", String.Empty, imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                ib.Add(impMedLow);
+                Implication impMedHi = new Implication("impMedHi", 25, String.Empty, "impMedLow", imp2, new AtomGroup(AtomGroup.LogicalOperator.And, atom2_2, atom3));
+                ib.Add(impMedHi);
+                new MutexManager(ib).AnalyzeImplications();
+                new PreconditionManager(ib).AnalyzeImplications();
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]
@@ -456,11 +473,13 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.IsTrue(new AtomFunction(AtomFunction.RelationResolutionType.NxBRE, false, null, "nxbre:Equals", new Individual(123), new Individual(123)).PositiveRelation, "AtomFunction: true PositiveRelation");
 			Assert.IsFalse(new AtomFunction(AtomFunction.RelationResolutionType.NxBRE, false, null, "nxbre:Equals", new Individual(123), new Individual(321)).PositiveRelation, "AtomFunction: false PositiveRelation");
 		}
-		
-		[Test][ExpectedException(typeof(BREException))]
-		public void AtomFunctionWithFunctionPredicate() {
-			new AtomFunction(AtomFunction.RelationResolutionType.NxBRE, false, null, "nxbre:Equals", new Individual(123), new Function(Function.FunctionResolutionType.Binder, "123", null, "Test", new string[0]));
-			Assert.Fail("Should never reach me!");
+
+        [Test]
+        public void AtomFunctionWithFunctionPredicate() {
+            Assert.Throws<BREException>(() => {
+                new AtomFunction(AtomFunction.RelationResolutionType.NxBRE, false, null, "nxbre:Equals", new Individual(123), new Function(Function.FunctionResolutionType.Binder, "123", null, "Test", new string[0]));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]
@@ -477,10 +496,12 @@ namespace NxBRE.Test.InferenceEngine {
 
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void FactNonFact() {
-			new Fact("luxury", new Variable("product"));
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                new Fact("luxury", new Variable("product"));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]
@@ -646,44 +667,62 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.IsFalse(query.Equals(implication), "QueryIsNotImplication");
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void QueryBaseDuplicatedLabel() {
-			QueryBase qb = new QueryBase();
-			qb.Add(new Query("get spending",
-			                      new AtomGroup(AtomGroup.LogicalOperator.And, new Atom("spending",
-								                      new Variable("customer"),
-								                      new Individual("min(5000,EUR)"),
-								                      new Individual("previous year")))));
-			qb.Add(new Query("get spending",
-			                      new AtomGroup(AtomGroup.LogicalOperator.And, new Atom("spending",
-								                      new Variable("customer"),
-								                      new Individual("min(7000,EUR)"),
-								                      new Individual("previous year")))));
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<BREException>(() => {
+                QueryBase qb = new QueryBase();
+                qb.Add(new Query(
+                    "get spending",
+                    new AtomGroup(
+                        AtomGroup.LogicalOperator.And,
+                        new Atom("spending",
+                        new Variable("customer"),
+                        new Individual("min(5000,EUR)"),
+                        new Individual("previous year")))));
+                qb.Add(new Query(
+                    "get spending",
+                    new AtomGroup(
+                        AtomGroup.LogicalOperator.And,
+                        new Atom("spending",
+                        new Variable("customer"),
+                        new Individual("min(7000,EUR)"),
+                        new Individual("previous year")))));
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
-		[Test][ExpectedException(typeof(IndexOutOfRangeException))]
+		[Test]
 		public void QueryBaseIndexSubZero() {
-			QueryBase qb = new QueryBase();
-			qb.Add(new Query("get spending",
-			                      new AtomGroup(AtomGroup.LogicalOperator.And, new Atom("spending",
-								                      new Variable("customer"),
-								                      new Individual("min(5000,EUR)"),
-								                      new Individual("previous year")))));
-			qb.Get(-1);
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<IndexOutOfRangeException>(() => {
+                QueryBase qb = new QueryBase();
+                qb.Add(new Query(
+                        "get spending",
+                        new AtomGroup(
+                            AtomGroup.LogicalOperator.And,
+                            new Atom("spending",
+                            new Variable("customer"),
+                            new Individual("min(5000,EUR)"),
+                            new Individual("previous year")))));
+                qb.Get(-1);
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
-		[Test][ExpectedException(typeof(IndexOutOfRangeException))]
+		[Test]
 		public void QueryBaseIndexTooHigh() {
-			QueryBase qb = new QueryBase();
-			qb.Add(new Query("get spending",
-			                      new AtomGroup(AtomGroup.LogicalOperator.And, new Atom("spending",
-								                      new Variable("customer"),
-								                      new Individual("min(5000,EUR)"),
-								                      new Individual("previous year")))));
-			qb.Get(2);
-			Assert.Fail("Should never reach me!");
+            Assert.Throws<IndexOutOfRangeException>(() => {
+                QueryBase qb = new QueryBase();
+                qb.Add(new Query(
+                        "get spending",
+                        new AtomGroup(
+                            AtomGroup.LogicalOperator.And,
+                            new Atom("spending",
+                            new Variable("customer"),
+                            new Individual("min(5000,EUR)"),
+                            new Individual("previous year")))));
+                qb.Get(2);
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 		[Test]

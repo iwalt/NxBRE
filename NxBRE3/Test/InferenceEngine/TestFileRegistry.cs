@@ -11,7 +11,7 @@ namespace NxBRE.Test.InferenceEngine {
 	public class TestFileRegistry {
 		private IRegistry registry;
 		
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void Initialize() {
 			string ruleFilesFolder = Parameter.GetString("unittest.ruleml.inputfolder") + "/";
 			

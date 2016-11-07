@@ -179,7 +179,7 @@ namespace NxBRE.Test.FlowEngine
 			resultCount++;
 		}
 		
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void InitTest() {
 			testFile = Parameter.GetString("unittest.inputfile");
 			
@@ -307,7 +307,7 @@ namespace NxBRE.Test.FlowEngine
 		
 		[Test]
 		public void GenericTypeAssertions() {
-			Assert.IsInstanceOfType(typeof(Dictionary<string,string>), GetObject("dictionaryStringString"), "Dictionary");
+			Assert.IsInstanceOf(typeof(Dictionary<string,string>), GetObject("dictionaryStringString"), "Dictionary");
 		}
 		
 		[Test]

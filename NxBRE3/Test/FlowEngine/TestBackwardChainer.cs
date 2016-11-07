@@ -16,7 +16,7 @@
 		private BackwardChainer backwardChainer;
 		private string ruleFilesFolder;
 		
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public void InitializeFixture() {
 			ruleFilesFolder = Parameter.GetString("unittest.ruleml.inputfolder");
 		}
@@ -29,11 +29,13 @@
 		}
 		
 		[Test]
-		[ExpectedException(typeof(BREException))]
 		public void InvalidRuleBase() {
-			flowEngine = new BREImpl();
-			flowEngine.Init(new XBusinessRulesFileDriver(Parameter.GetString("unittest.inputfile")));
-			backwardChainer = new BackwardChainer(flowEngine);
+            Assert.Throws<BREException>(() => {
+                flowEngine = new BREImpl();
+                flowEngine.Init(
+                    new XBusinessRulesFileDriver(Parameter.GetString("unittest.inputfile")));
+                backwardChainer = new BackwardChainer(flowEngine);
+            });
 		}
 		
 		[Test]

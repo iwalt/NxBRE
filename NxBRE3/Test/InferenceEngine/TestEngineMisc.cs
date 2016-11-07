@@ -254,13 +254,15 @@ namespace NxBRE.Test.InferenceEngine {
 		}
 
 
-		[Test][ExpectedException(typeof(BREException))]
-		public void EndlessLoopException() {
-			ie = new IEImpl();
-			ie.LoadRuleBase(new RuleML086DatalogAdapter(ruleFilesFolder + "endlessloop.ruleml", FileAccess.Read));
-			// Processing should reach iteration limit and throw a BREexception
-			ie.Process();
-			Assert.Fail("Should never reach me!");
+        [Test]
+        public void EndlessLoopException() {
+            Assert.Throws<BREException>(() => {
+                ie = new IEImpl();
+                ie.LoadRuleBase(new RuleML086DatalogAdapter(ruleFilesFolder + "endlessloop.ruleml", FileAccess.Read));
+                // Processing should reach iteration limit and throw a BREexception
+                ie.Process();
+                Assert.Fail("Should never reach me!");
+            });
 		}
 		
 
@@ -425,9 +427,10 @@ namespace NxBRE.Test.InferenceEngine {
 				ie.RunQuery("Security Sandbox Violation");
 				Assert.Fail("An exception should have been thrown!");
 			} catch(BREException e) {
-				Assert.IsInstanceOfType(typeof(System.Security.SecurityException),
-				                        e.InnerException,
-				                        "A SecurityException was expected");
+				Assert.IsInstanceOf(
+                    typeof(System.Security.SecurityException),
+				    e.InnerException,
+				    "A SecurityException was expected");
 			}
 		}
 

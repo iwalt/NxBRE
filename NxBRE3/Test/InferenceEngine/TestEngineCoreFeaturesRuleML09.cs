@@ -422,10 +422,12 @@ namespace NxBRE.Test.InferenceEngine {
 
 		}
 
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void CommitNotIsolatedMemory() {
-			ie.LoadRuleBase(NewTestAdapter());
-			ie.CommitIsolatedMemory();
+            Assert.Throws<BREException>(() => {
+                ie.LoadRuleBase(NewTestAdapter());
+                ie.CommitIsolatedMemory();
+            });
 		}
 	
 		[Test]
@@ -563,14 +565,16 @@ namespace NxBRE.Test.InferenceEngine {
 	  	ie.NewFactHandler -= henf;
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void CheckStrictImplicationBehavior() {
-			ie.LoadRuleBase(NewTestAdapter());
-			((IEImpl)ie).strictImplication = true;
-			Assert.IsTrue(((IEImpl)ie).strictImplication, "Ensure IE is strict");
-			
-			Assert.IsTrue(ie.Assert(new Fact("flagStrictA", new Individual("something"))), "Asserted fact A");
-			Process();
+            Assert.Throws<BREException>(() => {
+                ie.LoadRuleBase(NewTestAdapter());
+                ((IEImpl)ie).strictImplication = true;
+                Assert.IsTrue(((IEImpl)ie).strictImplication, "Ensure IE is strict");
+
+                Assert.IsTrue(ie.Assert(new Fact("flagStrictA", new Individual("something"))), "Asserted fact A");
+                Process();
+            });
 		}
 		
 		[Test]

@@ -27,14 +27,16 @@ namespace NxBRE.Test.InferenceEngine {
 			Assert.Fail("Should never reach me!");
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void PersistenceOfNonConvertibleTypedFacts086() {
-			DoPersistenceOfNonConvertibleTypedFacts(new RuleML086NafDatalogAdapter(ruleFilesFolder + "typed-facts-0_86.ruleml", FileAccess.Read));
+            Assert.Throws<BREException>(() =>
+			    DoPersistenceOfNonConvertibleTypedFacts(new RuleML086NafDatalogAdapter(ruleFilesFolder + "typed-facts-0_86.ruleml", FileAccess.Read)));
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void PersistenceOfNonConvertibleTypedFacts09() {
-			DoPersistenceOfNonConvertibleTypedFacts(new RuleML09NafDatalogAdapter(ruleFilesFolder + "typed-facts-0_9.ruleml", FileAccess.Read));
+            Assert.Throws<BREException>(() =>
+			    DoPersistenceOfNonConvertibleTypedFacts(new RuleML09NafDatalogAdapter(ruleFilesFolder + "typed-facts-0_9.ruleml", FileAccess.Read)));
 		}
 		
 		private void EnsureFactCorrectlyTyped(IRuleBaseAdapter adapter, int expectedFactCount) {

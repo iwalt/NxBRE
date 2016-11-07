@@ -15,9 +15,10 @@ namespace NxBRE.Test
 	[TestFixture]
 	public class TestCompilation
 	{
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void BadExpressionSyntax() {
-			Compilation.Evaluate("5 + System.Math.Pow(2d, 5d");
+            Assert.Throws<BREException>(() =>
+			    Compilation.Evaluate("5 + System.Math.Pow(2d, 5d"));
 		}
 		
 		[Test]
@@ -71,38 +72,46 @@ namespace NxBRE.Test
 			                     "Evaluation with String and Int32 arguments");
 		}
 
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void MissingArgumentDictionaryExpressions() {
-			IDictionary values = new Hashtable();
-			values.Add("b", 4d);
-			Assert.AreEqual(21d, Compilation.Evaluate("5 + System.Math.Pow(2d, {var:a})", @"\{var:(?<1>[^}]*)\}", values), "Evaluation with var:");
+            Assert.Throws<BREException>(() => {
+                IDictionary values = new Hashtable();
+                values.Add("b", 4d);
+                Assert.AreEqual(
+                    21d, Compilation.Evaluate("5 + System.Math.Pow(2d, {var:a})", @"\{var:(?<1>[^}]*)\}", values), "Evaluation with var:");
+            });
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void MissingArgumentMixedDictionaryExpressions() {
-			IDictionary values = new Hashtable();
-			values.Add("a", 4d);
-			values.Add(2, 3d);
-			
-			Assert.AreEqual(64d, Compilation.Evaluate("System.Math.Pow({stringVarName:a}, {intVarName:1})",
-			                                          @"\{(stringVarName:|intVarName:)(?<1>[^}]*)\}",
-			                                          @"\{intVarName:([^}]*)\}",
-			                                          values),
-			                     "Evaluation with String and Int32 arguments");
+            Assert.Throws<BREException>(() => {
+                IDictionary values = new Hashtable();
+                values.Add("a", 4d);
+                values.Add(2, 3d);
+
+                Assert.AreEqual(64d, Compilation.Evaluate("System.Math.Pow({stringVarName:a}, {intVarName:1})",
+                                                          @"\{(stringVarName:|intVarName:)(?<1>[^}]*)\}",
+                                                          @"\{intVarName:([^}]*)\}",
+                                                          values),
+                                     "Evaluation with String and Int32 arguments");
+            });
 		}
-		
-		[Test][ExpectedException(typeof(System.InvalidCastException))]
-		public void CompileThenChangeTypeError() {
-			IDictionary values = new Hashtable();
-			values.Add("a", 4d);
-			
-			IDictionaryEvaluator compiledEvaluator = Compilation.NewEvaluator("5 + System.Math.Pow(2d, {var:a})", @"\{var:(?<1>[^}]*)\}", values);
-			Assert.AreEqual(21d, compiledEvaluator.Run(values));
-			
-			// change the type of a, the evaluation should fail
-			values = new Hashtable();
-			values.Add("a", "4");
-			Assert.AreEqual(21d, compiledEvaluator.Run(values));
+
+        [Test]
+        public void CompileThenChangeTypeError() {
+            Assert.Throws<InvalidCastException>(() => {
+                IDictionary values = new Hashtable();
+                values.Add("a", 4d);
+
+                IDictionaryEvaluator compiledEvaluator =
+                    Compilation.NewEvaluator("5 + System.Math.Pow(2d, {var:a})", @"\{var:(?<1>[^}]*)\}", values);
+                Assert.AreEqual(21d, compiledEvaluator.Run(values));
+
+                // change the type of a, the evaluation should fail
+                values = new Hashtable();
+                values.Add("a", "4");
+                Assert.AreEqual(21d, compiledEvaluator.Run(values));
+            });
 		}
 		
 		[Test]
@@ -122,14 +131,17 @@ namespace NxBRE.Test
 			Assert.AreEqual(31d, Compilation.Evaluate("expr:{$a} + System.Math.Pow(2d, {$b})", @"\{\$(?<1>[^}]*)\}", variables, values), "Evaluation with $");
 		}
 		
-		[Test][ExpectedException(typeof(BREException))]
+		[Test]
 		public void MissingValueDirectListExpressions() {
-			IList variables = new ArrayList();
-			variables.Add("a");
-			variables.Add("b");
-			IList values = new ArrayList();
-			values.Add(5d);
-			Assert.AreEqual(21d, Compilation.Evaluate("{var:a} + System.Math.Pow(2d, {var:b})", @"\{var:(?<1>[^}]*)\}", variables, values), "Evaluation with var:");
+            Assert.Throws<BREException>(() => {
+                IList variables = new ArrayList();
+                variables.Add("a");
+                variables.Add("b");
+                IList values = new ArrayList();
+                values.Add(5d);
+                Assert.AreEqual(
+                    21d, Compilation.Evaluate("{var:a} + System.Math.Pow(2d, {var:b})", @"\{var:(?<1>[^}]*)\}", variables, values), "Evaluation with var:");
+            });
 		}
 		
 		[Test]

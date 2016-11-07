@@ -12,7 +12,7 @@ namespace NxBRE.Test.InferenceEngine {
 		protected string testFile;
 		protected string gedcomFile;
 		
-		[TestFixtureSetUp]
+		[OneTimeSetUp]
 		public virtual void GenerateRuleFiles() {
 			testFile = GenerateRuleFile("test-0_9.ruleml", SaveFormatAttributes.Compact);
 			gedcomFile = GenerateRuleFile("gedcom-relations-0_9.ruleml", SaveFormatAttributes.Compact);

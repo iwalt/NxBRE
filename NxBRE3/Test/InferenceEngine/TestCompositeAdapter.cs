@@ -29,7 +29,7 @@ namespace  NxBRE.Test.InferenceEngine
             ruleFilesFolder = Parameter.GetString("unittest.ruleml.inputfolder") + "/";
         }
 
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void Init()
         {
             m_GedcomAdapter = new RuleML09NafDatalogAdapter(ruleFilesFolder + "gedcom-relations-0_9.ruleml", FileAccess.Read);
