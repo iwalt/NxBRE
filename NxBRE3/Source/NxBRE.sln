@@ -2,6 +2,11 @@
 Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 # SharpDevelop 2.2.1.2648
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{F75EC47F-A50F-49E4-AF3A-1550E26FD53B}"
+	ProjectSection(SolutionItems) = preProject
+		..\paket.dependencies = ..\paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NxBRE", "NxBRE.csproj", "{C5A2507E-550E-4EEC-B3C2-A278ECB27E30}"
 EndProject
 Global

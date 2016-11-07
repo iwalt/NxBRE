@@ -1,5 +1,10 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 9.00
 # SharpDevelop 2.0.0.1462
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{48A3A76E-5229-4865-9B5D-637541DE824E}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\paket.dependencies = ..\..\paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "Common.csproj", "{EA3874A3-E6C9-45DD-B037-6882C1076920}"
 EndProject
 Global

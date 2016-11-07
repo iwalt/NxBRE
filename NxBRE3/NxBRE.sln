@@ -3,6 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{A0AF9575-D34D-4C5B-BC52-4C795BD03393}"
+	ProjectSection(SolutionItems) = preProject
+		paket.dependencies = paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NxBRE", "Source\NxBRE.csproj", "{C5A2507E-550E-4EEC-B3C2-A278ECB27E30}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NxBRE-UnitTest", "Test\NxBRE-UnitTest.csproj", "{2D105A1A-E216-43B6-8403-52C57F2D6E1A}"

@@ -1,5 +1,10 @@
 ﻿Microsoft Visual Studio Solution File, Format Version 9.00
 # SharpDevelop 2.0.0.1462
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".paket", ".paket", "{D4A03AC3-AABD-4EF9-8535-158FFE31F94C}"
+	ProjectSection(SolutionItems) = preProject
+		..\paket.dependencies = ..\paket.dependencies
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Discount", "Discount\Discount.csproj", "{2DFD86E8-74E1-4E2E-A692-0FEEA13FD0DF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fraudcontrol", "Fraudcontrol\Fraudcontrol.csproj", "{FB24E7EF-CA48-4B4A-936D-AC1FA711968D}"

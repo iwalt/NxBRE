@@ -1,0 +1,7 @@
+source https://www.nuget.org/api/v2
+framework >= net461
+
+group Main
+source https://www.nuget.org/api/v2
+
+nuget NUnit 3.5.0
