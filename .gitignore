@@ -422,6 +422,8 @@ $RECYCLE.BIN/
 # Paket dependency manager
 
 # FAKE - F# Make
+deploy/
+packaging/
 
 # JetBrains Rider
 
@@ -434,3 +436,4 @@ $RECYCLE.BIN/
 
 ### VisualStudio Patch ###
 build/
+
