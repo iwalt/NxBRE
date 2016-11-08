@@ -10,12 +10,6 @@ let projectDescription = "Lightweight Business Rules Engine for .NET"
 let projectSummary = projectDescription
 
 
-// Tools.
-
-// TODO: Would be better if this was restored into project.
-let nugetPath = ProgramFilesX86 @@ "NuGet/nuget.exe"
-
-
 // Directories.
 let buildDir  = "./build/"
 let deployDir = "./deploy/"
@@ -60,7 +54,6 @@ Target "CreatePackage" (fun _ ->
                 WorkingDir = packagingDir
                 Version = version
                 Publish = false
-                ToolPath = nugetPath
             })
         "NxBRE.nuspec"
 )

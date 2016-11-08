@@ -4,6 +4,6 @@ framework >= net461
 group Main
 source https://www.nuget.org/api/v2
 
+nuget NuGet.CommandLine
 nuget NUnit 3.5.0
-nuget FSharp.Core
 nuget FAKE
